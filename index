@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kan-of-Worms Generator | Absurd Solutions for Everything</title>
+  <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink:    #f03e8c;
+      --green:   #b8e000;
+      --purple:  #6a3daa;
+      --teal:    #2cbfb0;
+      --orange:  #ff7c2a;
+      --yellow:  #ffe535;
+      --dark:    #1a1228;
+      --cream:   #fffbe8;
+      --red:     #e03030;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--dark);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(240,62,140,0.18) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(44,191,176,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(106,61,170,0.12) 0%, transparent 60%);
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      padding: 2.5rem 1rem 1rem;
+    }
+
+    .brand-tag {
+      display: inline-block;
+      background: var(--pink);
+      color: white;
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 1rem;
+      border-radius: 100px;
+      border: 3px solid white;
+      margin-bottom: 1rem;
+    }
+
+    .main-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      line-height: 0.95;
+      color: var(--yellow);
+      text-shadow:
+        4px 4px 0 var(--pink),
+        8px 8px 0 var(--purple);
+      letter-spacing: 0.02em;
+    }
+
+    .main-title span { color: var(--green); }
+
+    .subtitle {
+      font-family: 'Boogaloo', cursive;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: var(--teal);
+      margin-top: 0.6rem;
+      letter-spacing: 0.05em;
+    }
+
+    .creator-credit {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      margin-top: 0.4rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── INPUT SECTION ── */
+    .input-section {
+      max-width: 680px;
+      margin: 2rem auto;
+      padding: 0 1.2rem;
+    }
+
+    .can-label-input {
+      background: var(--green);
+      border-radius: 18px;
+      border: 5px solid var(--dark);
+      box-shadow: 6px 6px 0 var(--pink), 10px 10px 0 var(--purple);
+      padding: 1.8rem 2rem;
+      position: relative;
+    }
+
+    .can-label-input::before {
+      content: 'KAN-OF-WORMS';
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--dark);
+      display: block;
+      text-align: center;
+      margin-bottom: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .input-label {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      color: var(--dark);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .topic-input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: 4px solid var(--dark);
+      border-radius: 12px;
+      background: var(--cream);
+      color: var(--dark);
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+
+    .topic-input:focus {
+      box-shadow: 0 0 0 3px var(--pink);
+    }
+
+    .topic-input::placeholder { color: #999; font-weight: 400; }
+
+    /* Filter checkboxes */
+    .filters-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.95rem;
+      color: var(--dark);
+      margin: 1rem 0 0.5rem;
+    }
+
+    .filters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .filter-chip {
+      cursor: pointer;
+    }
+
+    .filter-chip input { display: none; }
+
+    .filter-chip span {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      border-radius: 100px;
+      border: 3px solid var(--dark);
+      background: white;
+      font-family: 'Boogaloo', cursive;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      transition: background 0.15s, color 0.15s, transform 0.1s;
+    }
+
+    .filter-chip input:checked + span {
+      background: var(--purple);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .generate-btn {
+      width: 100%;
+      margin-top: 1.4rem;
+      padding: 1rem;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: white;
+      background: var(--pink);
+      border: 4px solid var(--dark);
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 5px 5px 0 var(--purple);
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 var(--purple);
+    }
+
+    .generate-btn:active:not(:disabled) {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 var(--purple);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* ── RESULTS ── */
+    #results {
+      max-width: 720px;
+      margin: 0 auto 3rem;
+      padding: 0 1.2rem;
+    }
+
+    .loading-can {
+      text-align: center;
+      padding: 3rem;
+      display: none;
+    }
+
+    .loading-can .worm {
+      font-size: 3rem;
+      display: inline-block;
+      animation: wiggle 0.5s infinite alternate;
+    }
+
+    @keyframes wiggle {
+      from { transform: rotate(-15deg) scale(1); }
+      to   { transform: rotate(15deg) scale(1.1); }
+    }
+
+    .loading-can p {
+      font-family: 'Boogaloo', cursive;
+      font-size: 1.3rem;
+      color: var(--yellow);
+      margin-top: 1rem;
+    }
+
+    /* individual kan card */
+    .kan-card {
+      background: var(--cream);
+      border: 5px solid var(--dark);
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+      box-shadow: 7px 7px 0 var(--pink);
+      animation: popIn 0.4s cubic-bezier(.175,.885,.32,1.275) both;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.85) rotate(-2deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .kan-card:nth-child(even) {
+      box-shadow: 7px 7px 0 var(--teal);
+      transform-origin: right center;
+    }
+
+    .kan-card:nth-child(3n) {
+      box-shadow: 7px 7px 0 var(--orange);
+    }
+
+    .kan-header {
+      background: var(--purple);
+      padding: 0.7rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kan-number {
+      font-family: 'Fredoka One', cursive;
+      color: var(--yellow);
+      font-size: 1.1rem;
+    }
+
+    .humor-badge {
+      background: var(--yellow);
+      color: var(--dark);
+      font-family: 'Boogaloo', cursive;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      border: 2px solid var(--dark);
+      text-transform: uppercase;
+    }
+
+    .kan-body {
+      padding: 1.4rem 1.5rem;
+    }
+
+    .kan-product-name {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.7rem;
+      color: var(--purple);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .kan-tagline {
+      font-family: 'Boogaloo', cursive;
+      font-size: 1.05rem;
+      color: var(--red);
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+
+    .kan-section-title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 0.3rem;
+    }
+
+    .kan-description {
+      font-size: 0.97rem;
+      line-height: 1.55;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    .kan-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    .kan-detail-box {
+      background: var(--dark);
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+    }
+
+    .kan-detail-box .label {
+      font-family: 'Boogaloo', cursive;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--teal);
+      margin-bottom: 0.2rem;
+    }
+
+    .kan-detail-box .value {
+      font-size: 0.88rem;
+      color: var(--cream);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .kan-visual-notes {
+      background: var(--yellow);
+      border: 3px dashed var(--dark);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--dark);
+      line-height: 1.5;
+    }
+
+    .kan-visual-notes strong {
+      font-family: 'Fredoka One', cursive;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    /* error */
+    .error-box {
+      background: #fff0f0;
+      border: 4px solid var(--red);
+      border-radius: 14px;
+      padding: 1.2rem 1.5rem;
+      text-align: center;
+      color: var(--red);
+      font-family: 'Boogaloo', cursive;
+      font-size: 1.1rem;
+    }
+
+    /* footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: rgba(255,255,255,0.25);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    footer a { color: var(--teal); text-decoration: none; }
+
+    /* decorative worms strip */
+    .worm-strip {
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 0.3em;
+      padding: 0.5rem;
+      opacity: 0.35;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-tag">🐛 Kan-of-Worms · Absurd Solutions</div>
+    <h1 class="main-title">KAN-OF-WORMS<br><span>GENERATOR</span></h1>
+    <p class="subtitle">Flip any topic into shelf-worthy absurdity</p>
+    <p class="creator-credit">Created by Studio Bits of Gravity · Happy Grouch Cartoonist</p>
+  </header>
+
+  <div class="worm-strip">🐛🐛🐛🐛🐛🐛🐛🐛🐛</div>
+
+  <div class="input-section">
+    <div class="can-label-input">
+      <label class="input-label" for="topic">Enter a topic everyone knows about:</label>
+      <input
+        class="topic-input"
+        id="topic"
+        type="text"
+        placeholder="e.g. coffee, gym culture, social media, traffic..."
+        maxlength="120"
+      />
+
+      <p class="filters-title">Humor filters (pick any, or leave all for random mix):</p>
+      <div class="filters-grid" id="filters">
+        <label class="filter-chip"><input type="checkbox" value="Irony" /><span>🔄 Irony</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Character" /><span>🎭 Character</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Reference" /><span>📌 Reference</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Shock" /><span>😱 Shock</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Hyperbole" /><span>📢 Hyperbole</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Parody" /><span>🎬 Parody</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Wordplay" /><span>🔤 Wordplay</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Analogy" /><span>🔗 Analogy</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Madcap" /><span>🤪 Madcap</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Metahumor" /><span>🪞 Metahumor</span></label>
+        <label class="filter-chip"><input type="checkbox" value="Misplaced Focus" /><span>🔍 Misplaced Focus</span></label>
+      </div>
+
+      <button class="generate-btn" id="generateBtn" onclick="generate()">
+        🐛 OPEN THE KAN! 🐛
+      </button>
+    </div>
+  </div>
+
+  <div id="results">
+    <div class="loading-can" id="loading">
+      <div class="worm">🐛</div>
+      <p>Wriggling through the absurdity...</p>
+    </div>
+    <div id="cards"></div>
+  </div>
+
+  <footer>
+    <p>Kan-of-Worms Generator · <a href="https://quirkyflashchronicles.com" target="_blank">Quirky Flash Chronicles</a> · Studio Bits of Gravity</p>
+    <p style="margin-top:0.4rem">Happy Grouch Cartoonist · @ChatterWhackys</p>
+  </footer>
+
+  <script>
+    // ── CONFIG ──
+    const PROXY_URL = 'https://gravificer-proxy.mvphillips.workers.dev/';
+
+    const HUMOR_DEFS = {
+      Irony:           "The intended meaning is the exact opposite of what's said — like an energy drink that makes you calmer.",
+      Character:       "A comedic character acting on exaggerated traits — like a raccoon CEO championing lid-loosening legislation.",
+      Reference:       "A real-life relatable reference — like the FDA warning about weird-looking potatoes.",
+      Shock:           "Sex, violence, death, drugs, swearing, bathroom humor, or gross-out — used for a genuine laugh, not cruelty.",
+      Hyperbole:       "An exaggeration taken to an absurd, impossible extreme — like uploading 12 million vacation photos.",
+      Parody:          "Mimicking something well-known as closely as possible to mock it — like SNL's best sketches.",
+      Wordplay:        "Puns, double meanings, rhymes, or repurposed words — like 'Robot charged with battery.'",
+      Analogy:         "Comparing two wildly different things to illuminate both — like sending a baby into space to escape a dying planet.",
+      Madcap:          "Pure silly nonsense — wacky town, anything-goes, like a hamster launched from a monster truck.",
+      Metahumor:       "Humor that jokes about humor itself — like comedians who can only write 140-character jokes.",
+      "Misplaced Focus": "Deliberately focusing on the wrong detail — ignoring the big story to fixate on something trivial.",
+    };
+
+    async function generate() {
+      const topic = document.getElementById('topic').value.trim();
+      if (!topic) {
+        alert('Please enter a topic first!');
+        return;
+      }
+
+      const checked = [...document.querySelectorAll('#filters input:checked')].map(c => c.value);
+      const filtersToUse = checked.length > 0 ? checked : Object.keys(HUMOR_DEFS);
+
+      const filterDescriptions = filtersToUse
+        .map(f => `- ${f}: ${HUMOR_DEFS[f]}`)
+        .join('\n');
+
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      btn.textContent = '🐛 Opening the kan...';
+
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('cards').innerHTML = '';
+
+      const systemPrompt = `You are a creative director for "Kan-of-Worms: Absurd Solutions" — a satirical cartoon product line where everyday topics get turned into fake grocery-store products that flip reality on its head. Think: "Pessimism Pills (Eliminate Hyper-Optimism)" or "Self-Help Detox (for Self-Improvement Saturation)" or "GMR — Grumpy Mood Remover."
+
+Every product looks like something you'd find on a real shelf — with a product name, a tagline, and label copy — but the concept is absurdly backwards, satirical, or darkly funny.
+
+You must respond ONLY with valid JSON. No preamble, no markdown, no explanation outside the JSON.`;
+
+      const userPrompt = `Topic: "${topic}"
+
+Humor filters available:
+${filterDescriptions}
+
+Generate exactly 3 Kan-of-Worms cartoon product ideas for this topic. Each should use one of the humor filters listed above, applied creatively.
+
+Return a JSON array of 3 objects. Each object must have these exact keys:
+- "productName": string — the bold product name on the label (all caps, 2-5 words, punchy)
+- "humorType": string — which humor filter was used (must be one of: ${filtersToUse.join(', ')})
+- "tagline": string — short punchy label subtext (like "Eliminate Hyper-Optimism" or "Your Daily Dose of Reality Check")
+- "description": string — 2-3 sentences explaining the satirical concept and why it's funny
+- "labelDetails": object with:
+    - "quantity": string — (e.g., "365 ct." or "12 oz spray" or "48-pack")
+    - "claimBadge": string — a fake marketing claim on the label (e.g., "As Seen On Social Media" or "Doctor Disapproved")
+    - "flavorsOrVariants": string — funny variants (e.g., "Vanilla · Orange · Mint" or "Extra Bitter · Mild Regret")
+- "illustrationNotes": string — a vivid 2-sentence description of the cartoon mascot or visual scene that should appear on the label, including colors, character, and action
+
+JSON array only. Start with [ and end with ].`;
+
+      try {
+        const response = await fetch(PROXY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            system: systemPrompt,
+            messages: [{ role: 'user', content: userPrompt }]
+          })
+        });
+
+        const data = await response.json();
+        const raw = data.content?.map(b => b.text || '').join('') || '';
+        const clean = raw.replace(/```json|```/g, '').trim();
+        const ideas = JSON.parse(clean);
+
+        renderCards(ideas);
+
+      } catch (err) {
+        document.getElementById('cards').innerHTML = `
+          <div class="error-box">
+            🐛 Uh oh — the worms escaped! ${err.message}<br>
+            <small>Check that your Cloudflare proxy is running and the URL is correct.</small>
+          </div>`;
+      } finally {
+        document.getElementById('loading').style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = '🐛 OPEN THE KAN! 🐛';
+      }
+    }
+
+    function renderCards(ideas) {
+      const container = document.getElementById('cards');
+      ideas.forEach((idea, i) => {
+        const card = document.createElement('div');
+        card.className = 'kan-card';
+        card.style.animationDelay = `${i * 0.12}s`;
+        card.innerHTML = `
+          <div class="kan-header">
+            <span class="kan-number">KAN #${i + 1}</span>
+            <span class="humor-badge">${idea.humorType}</span>
+          </div>
+          <div class="kan-body">
+            <div class="kan-product-name">${idea.productName}</div>
+            <div class="kan-tagline">"${idea.tagline}"</div>
+
+            <div class="kan-section-title">The Concept</div>
+            <div class="kan-description">${idea.description}</div>
+
+            <div class="kan-details">
+              <div class="kan-detail-box">
+                <div class="label">Quantity</div>
+                <div class="value">${idea.labelDetails?.quantity || '—'}</div>
+              </div>
+              <div class="kan-detail-box">
+                <div class="label">Label Claim</div>
+                <div class="value">${idea.labelDetails?.claimBadge || '—'}</div>
+              </div>
+              <div class="kan-detail-box" style="grid-column: 1 / -1;">
+                <div class="label">Flavors / Variants</div>
+                <div class="value">${idea.labelDetails?.flavorsOrVariants || '—'}</div>
+              </div>
+            </div>
+
+            <div class="kan-visual-notes">
+              <strong>🎨 Illustration Notes</strong>
+              ${idea.illustrationNotes}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Allow Enter key to trigger
+    document.getElementById('topic').addEventListener('keydown', e => {
+      if (e.key === 'Enter') generate();
+    });
+  </script>
+
+</body>
+</html>
