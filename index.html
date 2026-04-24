@@ -421,7 +421,7 @@
 
   <div class="input-section">
     <div class="can-label-input">
-      <label class="input-label" for="topic">Give me a rabbit hole to jump down. Drop a topic here. No pressure, but make it a good one:</label>
+      <label class="input-label" for="topic">Enter a topic everyone knows about:</label>
       <input
         class="topic-input"
         id="topic"
@@ -446,7 +446,7 @@
       </div>
 
       <button class="generate-btn" id="generateBtn" onclick="generate()">
-        🐛 KREATE A KAN! 🐛
+        🐛 OPEN THE KAN! 🐛
       </button>
     </div>
   </div>
@@ -461,7 +461,7 @@
 
   <footer>
     <p>Kan-of-Worms Generator · <a href="https://quirkyflashchronicles.com" target="_blank">Quirky Flash Chronicles</a> · Studio Bits of Gravity</p>
-    <p style="margin-top:0.4rem">Happy Grouch Cartoonist - MVANNP · @BitsOfGravity @ChatterWackys</p>
+    <p style="margin-top:0.4rem">Happy Grouch Cartoonist · @ChatterWhackys</p>
   </footer>
 
   <script>
@@ -503,22 +503,32 @@
       document.getElementById('loading').style.display = 'block';
       document.getElementById('cards').innerHTML = '';
 
+      const humorDefsText = Object.entries(HUMOR_DEFS)
+        .map(([k, v]) => `- ${k}: ${v}`)
+        .join('\n');
+
       const systemPrompt = `You are a creative director for "Kan-of-Worms: Absurd Solutions" — a satirical cartoon product line where everyday topics get turned into fake grocery-store products that flip reality on its head. Think: "Pessimism Pills (Eliminate Hyper-Optimism)" or "Self-Help Detox (for Self-Improvement Saturation)" or "GMR — Grumpy Mood Remover."
 
 Every product looks like something you'd find on a real shelf — with a product name, a tagline, and label copy — but the concept is absurdly backwards, satirical, or darkly funny.
+
+You have 11 comedy techniques to work with. The best Kan-of-Worms ideas layer 2 or 3 of these together — just like the real cartoons do. For example, "Pessimism Pills" uses Parody (pharma packaging) + Irony (optimism is the disease) + Hyperbole (365-day supply). Always look for combinations that make the joke hit harder.
+
+THE 11 HUMOR TECHNIQUES:
+${humorDefsText}
 
 You must respond ONLY with valid JSON. No preamble, no markdown, no explanation outside the JSON.`;
 
       const userPrompt = `Topic: "${topic}"
 
-Humor filters available:
+Active humor filters for this generation (use only these, but mix them freely):
 ${filterDescriptions}
 
-Generate exactly 3 Kan-of-Worms cartoon product ideas for this topic. Each should use one of the humor filters listed above, applied creatively.
+Generate exactly 3 Kan-of-Worms cartoon product ideas for this topic. Each idea MUST combine 2 or 3 of the active humor filters above — layering them together makes the comedy richer. Make each of the 3 ideas use a different combination so the set has variety.
 
 Return a JSON array of 3 objects. Each object must have these exact keys:
 - "productName": string — the bold product name on the label (all caps, 2-5 words, punchy)
-- "humorType": string — which humor filter was used (must be one of: ${filtersToUse.join(', ')})
+- "humorTypes": array of strings — 2 or 3 humor filters combined in this idea (each must be from: ${filtersToUse.join(', ')})
+- "humorMix": string — one sentence explaining HOW the chosen techniques combine to make this funny
 - "tagline": string — short punchy label subtext (like "Eliminate Hyper-Optimism" or "Your Daily Dose of Reality Check")
 - "description": string — 2-3 sentences explaining the satirical concept and why it's funny
 - "labelDetails": object with:
@@ -535,7 +545,7 @@ JSON array only. Start with [ and end with ].`;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
+            max_tokens: 1400,
             system: systemPrompt,
             messages: [{ role: 'user', content: userPrompt }]
           })
@@ -564,14 +574,21 @@ JSON array only. Start with [ and end with ].`;
     function renderCards(ideas) {
       const container = document.getElementById('cards');
       ideas.forEach((idea, i) => {
+        // Support both old humorType (string) and new humorTypes (array)
+        const types = idea.humorTypes || (idea.humorType ? [idea.humorType] : []);
+        const badgesHTML = types.map(t =>
+          `<span class="humor-badge">${t}</span>`
+        ).join('');
+
         const card = document.createElement('div');
         card.className = 'kan-card';
         card.style.animationDelay = `${i * 0.12}s`;
         card.innerHTML = `
           <div class="kan-header">
             <span class="kan-number">KAN #${i + 1}</span>
-            <span class="humor-badge">${idea.humorType}</span>
+            <div style="display:flex; flex-wrap:wrap; gap:0.3rem; justify-content:flex-end;">${badgesHTML}</div>
           </div>
+          ${idea.humorMix ? `<div style="background:var(--purple); padding:0.5rem 1.2rem; font-family:'Boogaloo',cursive; font-size:0.85rem; color:var(--yellow); letter-spacing:0.03em;">🔀 ${idea.humorMix}</div>` : ''}
           <div class="kan-body">
             <div class="kan-product-name">${idea.productName}</div>
             <div class="kan-tagline">"${idea.tagline}"</div>
